@@ -6,9 +6,41 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 
+def create_scatter_plot_time_vs_messages(df, save_fig_name, title, figure_size):
+    #saving images in a folder
+    save_fig_name = 'pics/'+save_fig_name+'_scatter_plot'
+
+    for i in range(len(df['Time'])):
+        _tmp = df['Time'][i].split(':')
+        df['Time'][i] = _tmp[0]
+        _tmp = _tmp[1].split()[1]
+        if _tmp == 'PM':
+            df['Time'][i]= str(int(df['Time'][i]) + 12)
+
+
+    #grouping wrt senders
+    hist = df.groupby('Time', as_index=False).count()
+
+    plt.bar(hist['Time'], hist['Message'], color="coral", alpha=0.9)
+
+    #plt.scatter(df['Time'], df['Message'], color="blue", alpha=0.5)
+
+    plt.xlabel("Time")
+    plt.ylabel("Messages")
+
+    #should make room for the xlabel.
+    plt.tight_layout()
+
+    #save the graph
+    plt.savefig(fname=save_fig_name)
+
+
+    plt.show()
+    
+
 def create_bar_chart_sender_vs_messages(df, save_fig_name, title, figure_size):
     #saving images in a folder
-    save_fig_name = 'pics/'+save_fig_name
+    save_fig_name = 'pics/'+save_fig_name + '_bar_chart'
 
     #grouping wrt senders
     hist = df.groupby('Sender', as_index=False).count()
@@ -47,6 +79,7 @@ def create_bar_chart_sender_vs_messages(df, save_fig_name, title, figure_size):
 
 
 
-df = pd.read_csv('data.csv')
+df = pd.read_csv('data2.csv')
 
-create_bar_chart_sender_vs_messages(df, 'cse_group', 'Messages sent in CSE group', (100,5))
+create_scatter_plot_time_vs_messages(df, 'design_lab', 'Messages sent in design lab group', (50,5))
+#create_bar_chart_sender_vs_messages(df, 'cse_group', 'Messages sent in CSE group', (100,5))
